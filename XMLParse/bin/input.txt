@@ -1,0 +1,23 @@
+Root element :class
+----------------------------
+
+Current Element :student
+Student roll no : 393
+First Name : dinkar
+Last Name : kad
+Nick Name : dinkar
+Marks : 85
+
+Current Element :student
+Student roll no : 493
+First Name : Vaneet
+Last Name : Gupta
+Nick Name : vinni
+Marks : 95
+
+Current Element :student
+Student roll no : 593
+First Name : jasvir
+Last Name : singn
+Nick Name : jazz
+Marks : 90
