@@ -1,9 +1,15 @@
 package com.dit.parser;
-/*package com.dit.parser;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -12,13 +18,26 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class MyParser {
+import com.dit.dao.TrackDAO;
+import com.dit.entities.Track;
 
-	public static void main(String[] args) {
-		int count = 0;
+@Stateless
+@Local
+@TransactionAttribute (TransactionAttributeType.REQUIRED)
+public class MyParser implements Parser{
+	
+	@EJB
+	private TrackDAO dao;
+	
+	int count = 0;
+	private String trackId = null, name = null, artist = null, album = null;
+	private Collection<Track> tracks = new HashSet<Track>();
+
+	public void parse() {
 	      try {	
-	    	  // Specify file containing xml to be parsed
-	          File inputFile = new File("iTunes Music Library1.xml");
+	    	  System.out.println("Parser Loop");
+	    	  // Specify file containing xml to be parsed, must be in wildfly bin folder
+	          File inputFile = new File("iTunes Music Library3.xml");
 	          
 	          // Create Document Builder, Document is essentially the DOM tree
 	          DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -56,28 +75,34 @@ public class MyParser {
             					 Node nNode3 = thirdDictionaryList.item(k);
             					 if(nNode3.getTextContent().equals("Track ID")){
             						 Element kElement = (Element) nNode3;
+            						 trackId = kElement.getNextSibling().getTextContent();
     	            				 System.out.println("\nTrack ID :" + kElement.getNextSibling().getTextContent());
     	            			 }
             					 if(nNode3.getTextContent().equals("Name")){
             						 Element kElement = (Element) nNode3;
+            						 name = kElement.getNextSibling().getTextContent();
     	            				 System.out.println("Name :" + kElement.getNextSibling().getTextContent());
     	            			 }
             					 if(nNode3.getTextContent().equals("Artist")){
             						 Element kElement = (Element) nNode3;
+            						 artist = kElement.getNextSibling().getTextContent();
     	            				 System.out.println("Artist :" + kElement.getNextSibling().getTextContent());
     	            			 }
             					 if(nNode3.getTextContent().equals("Album")){
             						 Element kElement = (Element) nNode3;
+            						 album = kElement.getNextSibling().getTextContent();
     	            				 System.out.println("Album :" + kElement.getNextSibling().getTextContent());
     	            			 }
             				 }
+            				 Track t = new Track(name, artist, album, trackId);
+        					 tracks.add(t);
 	            		 }
 	            	 }
 	             }
 	          }
 	          
 	          // Playlists
-	          for(int i = 0; i < firstArrayList.getLength(); i++) {
+	          /*for(int i = 0; i < firstArrayList.getLength(); i++) {
 		             Node nNode = firstArrayList.item(i);
 		             if(nNode.getNodeName().equals("dict")){
 		            	 Element iElement = (Element) nNode;
@@ -119,12 +144,11 @@ public class MyParser {
 		            		 }
 		            	 }
 		             }
-		          }
-	          
+		          }*/
 	       } catch (Exception e) {
 	          e.printStackTrace();
 	       }
+	      dao.parse(tracks);
 	}
 
 }
-*/

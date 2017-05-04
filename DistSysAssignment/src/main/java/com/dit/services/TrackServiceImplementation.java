@@ -17,7 +17,7 @@ import com.dit.entities.Track;
 public class TrackServiceImplementation implements TrackService{
 	
 	@EJB
-	TrackDAO dao;
+	private TrackDAO dao;
 	
 	public Collection<Track> getAllTracks() {
 		return dao.getAllTracks();

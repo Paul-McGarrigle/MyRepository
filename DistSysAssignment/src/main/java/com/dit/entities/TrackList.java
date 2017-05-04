@@ -8,7 +8,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class TrackList implements Serializable{
 	private Collection<Track> trackList;
-
+	
+	public TrackList(){}
+	
 	public Collection<Track> getTrackList() {
 		return trackList;
 	}

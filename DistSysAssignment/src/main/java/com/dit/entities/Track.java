@@ -7,11 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="Track")
 public class Track implements Serializable{
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)// Used for Auto-Increment
 	@Column(name="id")private int id;
 	
 	@Column(name="name")private String name;
@@ -28,6 +30,10 @@ public class Track implements Serializable{
 		this.artist = artist;
 		this.album = album;
 		this.trackId = trackId;
+	}
+	public Track(String name) {
+		super();
+		this.name = name;
 	}
 
 	public String getName() {
