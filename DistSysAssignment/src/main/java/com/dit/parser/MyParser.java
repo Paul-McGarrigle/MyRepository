@@ -3,7 +3,6 @@ package com.dit.parser;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -19,6 +18,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.dit.dao.TrackDAO;
+import com.dit.entities.PlayList;
 import com.dit.entities.Track;
 
 @Stateless
@@ -31,13 +31,15 @@ public class MyParser implements Parser{
 	
 	int count = 0;
 	private String trackId = null, name = null, artist = null, album = null;
+	private String ppid = null, playListName = null, playListId = null, playListTrackId = null;
 	private Collection<Track> tracks = new HashSet<Track>();
+	private Collection<PlayList> playLists = new HashSet<PlayList>();
 
 	public void parse() {
 	      try {	
 	    	  System.out.println("Parser Loop");
 	    	  // Specify file containing xml to be parsed, must be in wildfly bin folder
-	          File inputFile = new File("iTunes Music Library3.xml");
+	          File inputFile = new File("iTunes Music Library1.xml");
 	          
 	          // Create Document Builder, Document is essentially the DOM tree
 	          DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -102,7 +104,7 @@ public class MyParser implements Parser{
 	          }
 	          
 	          // Playlists
-	          /*for(int i = 0; i < firstArrayList.getLength(); i++) {
+	          for(int i = 0; i < firstArrayList.getLength(); i++) {
 		             Node nNode = firstArrayList.item(i);
 		             if(nNode.getNodeName().equals("dict")){
 		            	 Element iElement = (Element) nNode;
@@ -112,14 +114,17 @@ public class MyParser implements Parser{
 		            		 // Second level in
 		            		 if(nNode2.getTextContent().equals("Playlist Persistent ID")){
         						 Element kElement = (Element) nNode2;
+        						 ppid = kElement.getNextSibling().getTextContent();
 	            				 System.out.println("\nPlaylist Persistent ID :" + kElement.getNextSibling().getTextContent());
 	            			 }
         					 if(nNode2.getTextContent().equals("Name")){
         						 Element kElement = (Element) nNode2;
+        						 playListName = kElement.getNextSibling().getTextContent();
 	            				 System.out.println("Name :" + kElement.getNextSibling().getTextContent());
 	            			 }
         					 if(nNode2.getTextContent().equals("Playlist ID")){
         						 Element kElement = (Element) nNode2;
+        						 playListId = kElement.getNextSibling().getTextContent();
 	            				 System.out.println("Playlist ID :" + kElement.getNextSibling().getTextContent());
 	            			 }
 		            		 if(nNode2.getNodeName().equals("array")){
@@ -135,20 +140,23 @@ public class MyParser implements Parser{
 	            							 Node nNode4 = forthArrayList.item(l);
 	            							 if(nNode4.getTextContent().equals("Track ID")){
 	            								 Element lElement = (Element) nNode4;
+	            								 playListTrackId = lElement.getNextSibling().getTextContent();
 	            								 System.out.println("Track ID :" + lElement.getNextSibling().getTextContent());
 	            							 }
 	            						 }
-	    	      
 	    	            			 }
 	            				 }
 		            		 }
 		            	 }
+		            	 PlayList p = new PlayList(playListName, ppid, playListId, playListTrackId);
+    					 playLists.add(p);
 		             }
-		          }*/
+		          }
 	       } catch (Exception e) {
 	          e.printStackTrace();
 	       }
 	      dao.parse(tracks);
+	      dao.parsePlayList(playLists);
 	}
 
 }
