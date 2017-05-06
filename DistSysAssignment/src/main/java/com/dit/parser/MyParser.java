@@ -1,8 +1,8 @@
 package com.dit.parser;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -32,12 +32,13 @@ public class MyParser implements Parser{
 	int count = 0;
 	private String trackId = null, name = null, artist = null, album = null;
 	private String ppid = null, playListName = null, playListId = null, playListTrackId = null;
-	private Collection<Track> tracks = new HashSet<Track>();
-	private Collection<PlayList> playLists = new HashSet<PlayList>();
+	private Set<Track> tracks = new HashSet<Track>();
+	private Set<PlayList> playLists = new HashSet<PlayList>();
+	Track track = new Track();
+	PlayList playlist = new PlayList();
 
 	public void parse() {
 	      try {	
-	    	  System.out.println("Parser Loop");
 	    	  // Specify file containing xml to be parsed, must be in wildfly bin folder
 	          File inputFile = new File("iTunes Music Library1.xml");
 	          
@@ -78,22 +79,18 @@ public class MyParser implements Parser{
             					 if(nNode3.getTextContent().equals("Track ID")){
             						 Element kElement = (Element) nNode3;
             						 trackId = kElement.getNextSibling().getTextContent();
-    	            				 System.out.println("\nTrack ID :" + kElement.getNextSibling().getTextContent());
     	            			 }
             					 if(nNode3.getTextContent().equals("Name")){
             						 Element kElement = (Element) nNode3;
             						 name = kElement.getNextSibling().getTextContent();
-    	            				 System.out.println("Name :" + kElement.getNextSibling().getTextContent());
     	            			 }
             					 if(nNode3.getTextContent().equals("Artist")){
             						 Element kElement = (Element) nNode3;
             						 artist = kElement.getNextSibling().getTextContent();
-    	            				 System.out.println("Artist :" + kElement.getNextSibling().getTextContent());
     	            			 }
             					 if(nNode3.getTextContent().equals("Album")){
             						 Element kElement = (Element) nNode3;
             						 album = kElement.getNextSibling().getTextContent();
-    	            				 System.out.println("Album :" + kElement.getNextSibling().getTextContent());
     	            			 }
             				 }
             				 Track t = new Track(name, artist, album, trackId);
@@ -115,17 +112,14 @@ public class MyParser implements Parser{
 		            		 if(nNode2.getTextContent().equals("Playlist Persistent ID")){
         						 Element kElement = (Element) nNode2;
         						 ppid = kElement.getNextSibling().getTextContent();
-	            				 System.out.println("\nPlaylist Persistent ID :" + kElement.getNextSibling().getTextContent());
 	            			 }
         					 if(nNode2.getTextContent().equals("Name")){
         						 Element kElement = (Element) nNode2;
         						 playListName = kElement.getNextSibling().getTextContent();
-	            				 System.out.println("Name :" + kElement.getNextSibling().getTextContent());
 	            			 }
         					 if(nNode2.getTextContent().equals("Playlist ID")){
         						 Element kElement = (Element) nNode2;
         						 playListId = kElement.getNextSibling().getTextContent();
-	            				 System.out.println("Playlist ID :" + kElement.getNextSibling().getTextContent());
 	            			 }
 		            		 if(nNode2.getNodeName().equals("array")){
 		            			 Element jElement = (Element) nNode2;
@@ -141,15 +135,15 @@ public class MyParser implements Parser{
 	            							 if(nNode4.getTextContent().equals("Track ID")){
 	            								 Element lElement = (Element) nNode4;
 	            								 playListTrackId = lElement.getNextSibling().getTextContent();
-	            								 System.out.println("Track ID :" + lElement.getNextSibling().getTextContent());
 	            							 }
 	            						 }
 	    	            			 }
 	            				 }
 		            		 }
 		            	 }
-		            	 PlayList p = new PlayList(playListName, ppid, playListId, playListTrackId);
+		            	 PlayList p = new PlayList(playListName, ppid, playListId, playListTrackId,tracks);
     					 playLists.add(p);
+    					 track.setPlaylisttrack(playLists);
 		             }
 		          }
 	       } catch (Exception e) {

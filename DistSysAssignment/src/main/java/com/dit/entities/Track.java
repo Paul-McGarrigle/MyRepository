@@ -1,27 +1,34 @@
 package com.dit.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Track")
+@Table(name="track")
 public class Track implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)// Used for Auto-Increment
-	@Column(name="id")private int id;
+	@Column(name="t_id")private int id;
 	
 	@Column(name="name")private String name;
 	@Column(name="artist")private String artist;
 	@Column(name="album")private String album;
 	@Column(name="trackId")private String trackId;
 	
-	// No argument constructor
+	@ManyToMany(mappedBy="tracksplaylists")
+	private Set<PlayList> playlisttrack;
+	
 	public Track(){}
 
 	public Track(String name, String artist, String album, String trackId) {
@@ -67,9 +74,22 @@ public class Track implements Serializable{
 	public void setTrackId(String trackId) {
 		this.trackId = trackId;
 	}
-	
-	
-	
+
+	public Set<PlayList> getPlaylisttrack() {
+		return playlisttrack;
+	}
+
+	public void setPlaylisttrack(Set<PlayList> playlisttrack) {
+		this.playlisttrack = playlisttrack;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 
 }

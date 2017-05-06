@@ -11,6 +11,7 @@ import com.dit.entities.Track;
 @Local
 public interface TrackDAO {
 	public Collection<Track> getAllTracks();
-	public void parse(Collection<Track> tracks);
-	public void parsePlayList(Collection<PlayList> playLists);
+	public void parse(Set<Track> tracks);
+	public void parsePlayList(Set<PlayList> playLists);
+	public void parseJoin(Set<PlayList> playLists);
 }

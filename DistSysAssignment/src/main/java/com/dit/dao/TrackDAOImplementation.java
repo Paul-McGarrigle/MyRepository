@@ -2,6 +2,7 @@ package com.dit.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -24,22 +25,25 @@ public class TrackDAOImplementation implements TrackDAO{
         return (List<Track>)query.getResultList();
 	}
 
-	public void parse(Collection<Track> tracks) {
-		System.out.println("DAO");
+	public void parse(Set<Track> tracks) {
 		for(Track t: tracks){
-			System.out.println("DAO Loop");
 			em.persist(t);
 		}
 		
 	}
 	
-	public void parsePlayList(Collection<PlayList> playLists) {
-		System.out.println("DAO");
+	public void parsePlayList(Set<PlayList> playLists) {
 		for(PlayList p: playLists){
-			System.out.println("DAO Loop");
 			em.persist(p);
 		}
 		
+	}
+
+	public void parseJoin(Set<PlayList> playLists) {
+		for(PlayList p: playLists){
+			System.out.println("HEREWERTYUIOPOIUYTREWERTYUIOIUYTRERTYUIOIUYTREWERTYUIOIUYTREWERTYUIOIUYTREWRTYUIUYTREWERTYU");
+			em.persist(p);
+		}
 	}
 
 }
