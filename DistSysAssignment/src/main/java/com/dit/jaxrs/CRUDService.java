@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.dit.entities.TrackList;
+import com.dit.entities.User;
 import com.dit.parser.Parser;
 import com.dit.services.TrackService;
 
@@ -35,4 +36,12 @@ public class CRUDService {
 		System.out.println("CRUD");
 		parser.parse();
 	}
+	
+	@POST
+    @Path("/register")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void addUser(User user){
+        System.out.println(user.getUsername());
+        parser.addUser(user);
+    }
 }

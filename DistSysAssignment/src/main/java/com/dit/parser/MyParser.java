@@ -20,6 +20,7 @@ import org.w3c.dom.NodeList;
 import com.dit.dao.TrackDAO;
 import com.dit.entities.PlayList;
 import com.dit.entities.Track;
+import com.dit.entities.User;
 
 @Stateless
 @Local
@@ -34,8 +35,6 @@ public class MyParser implements Parser{
 	private String ppid = null, playListName = null, playListId = null, playListTrackId = null;
 	private Set<Track> tracks = new HashSet<Track>();
 	private Set<PlayList> playLists = new HashSet<PlayList>();
-	Track track = new Track();
-	PlayList playlist = new PlayList();
 
 	public void parse() {
 	      try {	
@@ -50,7 +49,6 @@ public class MyParser implements Parser{
 	          
 	          // Get Root Element, i.e. plist
 	          doc.getDocumentElement().normalize();
-	          System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 	          Element root = doc.getDocumentElement();
 	          
 	          // The first dictinary tags in the tree, FirstLayer
@@ -61,9 +59,6 @@ public class MyParser implements Parser{
 	          Node firstArray = root.getElementsByTagName("array").item(0);
 	          NodeList firstArrayList = firstArray.getChildNodes();
 	          
-	          // Check if it is a text node for number 2 to work, i.e. it has an additional space not
-	          // found in 1 & 3
-	          System.out.println("----------------------------");
 	          for (int i = 0; i < firstDictionaryList.getLength(); i++) {
 	             Node nNode = firstDictionaryList.item(i);
 	             if(nNode.getNodeName().equals("dict")){
@@ -102,6 +97,7 @@ public class MyParser implements Parser{
 	          
 	          // Playlists
 	          for(int i = 0; i < firstArrayList.getLength(); i++) {
+	        	  Set<Track> playlistTrack = new HashSet<Track>();
 		             Node nNode = firstArrayList.item(i);
 		             if(nNode.getNodeName().equals("dict")){
 		            	 Element iElement = (Element) nNode;
@@ -136,21 +132,31 @@ public class MyParser implements Parser{
 	            								 Element lElement = (Element) nNode4;
 	            								 playListTrackId = lElement.getNextSibling().getTextContent();
 	            							 }
+	            			            	 for(Track t: tracks){
+	            			            		if(t.getTrackId().equals(playListTrackId)){
+	            			            			playlistTrack.add(t);
+	            			            		} 
+	            			            	 }
 	            						 }
 	    	            			 }
 	            				 }
 		            		 }
 		            	 }
-		            	 PlayList p = new PlayList(playListName, ppid, playListId, playListTrackId,tracks);
+		            	 PlayList p = new PlayList(playListName, ppid, playListId,playlistTrack);
     					 playLists.add(p);
-    					 track.setPlaylisttrack(playLists);
+    					 dao.parsePlayList(p);
+    					
 		             }
 		          }
 	       } catch (Exception e) {
 	          e.printStackTrace();
 	       }
-	      dao.parse(tracks);
-	      dao.parsePlayList(playLists);
+	      dao.parse(tracks); // Correct for tracks
+	      
+	}
+	
+	public void addUser(User user){
+		dao.addUser(user);
 	}
 
 }

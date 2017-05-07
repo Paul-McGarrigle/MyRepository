@@ -12,6 +12,7 @@ import javax.persistence.Query;
 
 import com.dit.entities.PlayList;
 import com.dit.entities.Track;
+import com.dit.entities.User;
 
 @Stateless
 @Local
@@ -32,15 +33,23 @@ public class TrackDAOImplementation implements TrackDAO{
 		
 	}
 	
-	public void parsePlayList(Set<PlayList> playLists) {
-		for(PlayList p: playLists){
-			em.persist(p);
-		}
-		
+	public void parsePlayList(PlayList playList) {
+		em.persist(playList);
 	}
 
 	public void parseJoin(Set<PlayList> playLists) {
 		for(PlayList p: playLists){
+			//System.out.println("HEREWERTYUIOPOIUYTREWERTYUIOIUYTRERTYUIOIUYTREWERTYUIOIUYTREWERTYUIOIUYTREWRTYUIUYTREWERTYU");
+			em.persist(p);
+		}
+	}
+
+	public void addUser(User user) {
+		em.persist(user);
+	}
+
+	public void parse1(Set<PlayList> playlist) {
+		for(PlayList p: playlist){
 			System.out.println("HEREWERTYUIOPOIUYTREWERTYUIOIUYTRERTYUIOIUYTREWERTYUIOIUYTREWERTYUIOIUYTREWRTYUIUYTREWERTYU");
 			em.persist(p);
 		}

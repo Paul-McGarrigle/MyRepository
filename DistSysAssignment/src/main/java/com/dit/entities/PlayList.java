@@ -24,7 +24,6 @@ public class PlayList implements Serializable {
 	@Column(name="playListName")private String playListName;
 	@Column(name="ppid")private String ppid;
 	@Column(name="playListId")private String playListId;
-	@Column(name="playListTrackId")private String playListTrackId;
 	
 	@ManyToMany(cascade=CascadeType.ALL)  
     @JoinTable(name="playlist_tracks", joinColumns=@JoinColumn(name="playListId", referencedColumnName="p_id"), inverseJoinColumns=@JoinColumn(name="trackId", referencedColumnName="t_id"))
@@ -32,23 +31,20 @@ public class PlayList implements Serializable {
 	
 	public PlayList(){}
 
-	public PlayList(String playListName, String ppid, String playListId, String playListTrackId) {
+	public PlayList(String playListName, String ppid, String playListId) {
 		super();
 		this.playListName = playListName;
 		this.ppid = ppid;
 		this.playListId = playListId;
-		this.playListTrackId = playListTrackId;
 	}
 	
 
-	public PlayList(String playListName, String ppid, String playListId, String playListTrackId,
-			Set<Track> tracksplaylists) {
+	public PlayList(String playListName, String ppid, String playListId, Set<Track> tracksplaylists) {
 		super();
 		this.id = id;
 		this.playListName = playListName;
 		this.ppid = ppid;
 		this.playListId = playListId;
-		this.playListTrackId = playListTrackId;
 		this.tracksplaylists = tracksplaylists;
 	}
 
@@ -84,14 +80,6 @@ public class PlayList implements Serializable {
 		this.playListId = playListId;
 	}
 
-	public String getPlayListTrackId() {
-		return playListTrackId;
-	}
-
-	public void setPlayListTrackId(String playListTrackId) {
-		this.playListTrackId = playListTrackId;
-	}
-	
 	public Set<Track> getTracksplaylists() {
 		return tracksplaylists;
 	}

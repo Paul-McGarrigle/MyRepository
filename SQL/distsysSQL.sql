@@ -11,24 +11,15 @@ CREATE TABLE `dist_sys`.`track` (
     PRIMARY KEY (`t_id`)
 );
 
-CREATE TABLE `dist_sys`.`users` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(45) NOT NULL,
-    `password` VARCHAR(45) NOT NULL,
-    `ppid` VARCHAR(100),
-    PRIMARY KEY (`id`),
-    CONSTRAINT `uc_ppid` UNIQUE (ppid)
-);
-
 CREATE TABLE `dist_sys`.`playlist` (
 	`p_id` INT NOT NULL AUTO_INCREMENT,
     `playListName` VARCHAR(100),
     `ppid` VARCHAR(100),
     `playListId` VARCHAR(100),
-    `playListTrackId` VARCHAR(100),
     PRIMARY KEY (`p_id`)
 	-- CONSTRAINT `uc_ppid` UNIQUE (ppid),
     -- CONSTRAINT `fk_playlist_users` FOREIGN KEY (ppid) REFERENCES users(ppid)
+    -- CONSTRAINT `fk_playlist_users` FOREIGN KEY (p_id) REFERENCES users(id)
 );
 
 CREATE TABLE `dist_sys`.`playlist_tracks` (
@@ -36,13 +27,25 @@ CREATE TABLE `dist_sys`.`playlist_tracks` (
     `trackId` INT,
     PRIMARY KEY (`playListId`,`trackId`),
 	CONSTRAINT `fk_track` FOREIGN KEY (trackId) REFERENCES Track(t_id),
-    CONSTRAINT `fk_playlist` FOREIGN KEY (playListId) REFERENCES PlayList(p_id)
+    CONSTRAINT `fk_playlist` FOREIGN KEY (playListId) REFERENCES playlist(p_id)
 );
 
--- INSERT INTO users ( `username`, `password`, `ppid`)
---     VALUES ( "testuser", "testpassword", `ssrysyressreys` );
+CREATE TABLE `dist_sys`.`users` (
+	`id` INT AUTO_INCREMENT,
+    `username` VARCHAR(45) NOT NULL,
+    `password` VARCHAR(45) NOT NULL,
+    `ppid` VARCHAR(100),
+    PRIMARY KEY (`id`)
+    -- CONSTRAINT `fk_playlist_users` FOREIGN KEY (id) REFERENCES playlist(p_id)
+    -- CONSTRAINT `uc_ppid` UNIQUE (ppid)
+);
+
+-- INSERT INTO users ( `username`, `password`) VALUES ( "testuser", "testpassword" );
     
 select * from Track;
 select * from PlayList;
+select count(*) from playlist_tracks;
 select * from playlist_tracks;
--- select * from users;
+select * from users;
+-- use group_project_ericsson;
+

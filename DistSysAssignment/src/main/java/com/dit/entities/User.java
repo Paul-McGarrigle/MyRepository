@@ -1,26 +1,25 @@
 package com.dit.entities;
 
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id") private int id;
+    
     @Column(name = "username") private String username;
     @Column(name = "password") private String password;
-    @Column(name = "role") private String role;
 
-    public User() {
+    public User(){}
 
-    }
-
-    public User(String username) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.role = role;
     }
 
     public int getId() {
@@ -47,12 +46,5 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }
 
