@@ -2,8 +2,18 @@ package com.dit.entities;
 
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
@@ -14,7 +24,15 @@ public class User implements Serializable{
     
     @Column(name = "username") private String username;
     @Column(name = "password") private String password;
-
+    @Column(name = "ppid") private String ppid;
+    
+/*    @OneToMany
+    @JoinColumn(name = "ppid") private String ppid;*/
+    
+    /*@OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ppid", referencedColumnName="ppid")
+    private Collection<PlayList> playList = new HashSet<PlayList>();*/
+    
     public User(){}
 
     public User(String username, String password) {

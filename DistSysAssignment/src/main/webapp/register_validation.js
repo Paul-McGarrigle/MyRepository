@@ -1,7 +1,7 @@
 var usernameFree = false;
 var passwordIsStrong = false;
 var passwordsMatch = false;
-console.log("HERE SCRIPT");
+
 function checkUsername(username) {
     $.ajax({
         type: "GET",
@@ -72,14 +72,14 @@ function checkStrength(password){
 }
 
 $(document).ready(function () {
-    /*$("#signup-form").submit(function(event){
-        event.preventDefault();//Default action will not happen
+    $("#signup-form").submit(function(event){
+        event.preventDefault();
     });
     $("#roleType").on("change", function(){
         $("#signup-role").val($("#roleType option:selected").text());
     });
 
-    $("#signup-name").on("keyup", function () {// when key is released
+    $("#signup-name").on("keyup", function () {
         var input = $(this);
         var is_uname = input.val();
         checkUsername(is_uname);
@@ -116,48 +116,74 @@ $(document).ready(function () {
 			passwordsMatch = true;
         }
 
-    });*/
+    });
 
-    var register = function(username, password) {
+    var register = function(username, password, role) {
         this.username=username;
         this.password = password;
-        //this.role = role;
+        this.role = role;
     }
 
-    $("#regBtn").click(function () {
-        var username = $("#name_text").val();
-        var password = $("#pw_text").val();
-        //var rpassword = $("#signup-repassword").val();
-        //var role = $("#signup-role").val();
+    $("#submit-button").click(function () {
+        var username = $("#signup-name").val();
+        var password = $("#signup-password").val();
+        var rpassword = $("#signup-repassword").val();
+        var role = $("#signup-role").val();
 		
-		//var successAlert = '<div class="alert alert-success alert-dismissable" id="success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>User successfully created.</div>';
-		//var failureAlert = '<div class="alert alert-danger alert-dismissable" id="success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Error. Please try again.</div>';
+		var successAlert = '<div class="alert alert-success alert-dismissable" id="success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>User successfully created.</div>';
+		var failureAlert = '<div class="alert alert-danger alert-dismissable" id="success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Error. Please try again.</div>';
 		
-        if(username !== "" && password !== ""){
-            var user = new register(username,password);
+        if(username !== "" && password !== "" && rpassword !== "" && role !== "" && usernameFree == true && passwordIsStrong == true && passwordsMatch == true){
+            var user = new register(username,password,role);
             $.ajax({
-                url:"http://localhost:8080/DistSysAssignment-0.0.1-SNAPSHOT/rest/tracks/register",
+                url:"http://localhost:8080/ericssongroupproject/front/rest/users/register",
                 type:"POST",
                 contentType: "application/json",
                 success:function () {
-                    //document.getElementById("alerts").innerHTML = successAlert;
-                	console.log("HERE SUCCESS");
-					$('#name_text').val('');
-					$('#pw_text').val('');
-					//$('#signup-repassword').val('');
-					//$('#signup-role').val('');
-					//$('#result').text('');
+                    document.getElementById("alerts").innerHTML = successAlert;
+					$('#signup-name').val('');
+					$('#signup-password').val('');
+					$('#signup-repassword').val('');
+					$('#signup-role').val('');
+					$('#result').text('');
                 },
                 error:function () {
-                    // document.getElementById("alerts").innerHTML = failureAlert;
-                	console.log("HERE FAIL");
+                    document.getElementById("alerts").innerHTML = failureAlert;
                 },
                 data:JSON.stringify(user)
             });
 			
         }// If login is empty
-        else {
-        	console.log("HERE EMPTY");
+        else if (username === "")
+        {
+            $("#status-name").removeClass("icon-check");
+            $("#status-name").addClass("icon-close");
+            $(".signup-name").addClass("error-placeholder");
+            $("#signup-name").addClass("error-input");
+        }
+        
+        if (password === "")
+        {
+            $("#status-password").removeClass("icon-check");
+            $("#status-password").addClass("icon-close");
+            $(".signup-password").addClass("error-placeholder");
+            $("#signup-password").addClass("error-input");
+        }
+
+        if (password != rpassword || rpassword == "")
+        {
+            $("#status-repassword").removeClass("icon-check");
+            $("#status-repassword").addClass("icon-close");
+            $(".signup-repassword").addClass("error-placeholder");
+            $("#signup-repassword").addClass("error-input");
+        }
+
+        if (role == "")
+        {
+            $("#status-role").removeClass("icon-check");
+            $("#status-role").addClass("icon-close");
+            $(".signup-role").addClass("error-placeholder");
+            $("#signup-role").addClass("error-input");
         }
 
     });

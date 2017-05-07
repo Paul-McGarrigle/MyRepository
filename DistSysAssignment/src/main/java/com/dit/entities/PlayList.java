@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -22,12 +23,20 @@ public class PlayList implements Serializable {
 	@Column(name="p_id")private int id;
 	
 	@Column(name="playListName")private String playListName;
+	
+	//@ManyToOne(targetEntity = User.class)
+	//@JoinColumn(name="ppid", referencedColumnName="ppid")
 	@Column(name="ppid")private String ppid;
+	
 	@Column(name="playListId")private String playListId;
 	
 	@ManyToMany(cascade=CascadeType.ALL)  
     @JoinTable(name="playlist_tracks", joinColumns=@JoinColumn(name="playListId", referencedColumnName="p_id"), inverseJoinColumns=@JoinColumn(name="trackId", referencedColumnName="t_id"))
 	private Set<Track> tracksplaylists;
+	
+	/*@ManyToOne
+	@JoinColumn(name="ppid")
+	private User user;*/
 	
 	public PlayList(){}
 

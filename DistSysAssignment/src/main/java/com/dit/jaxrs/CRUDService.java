@@ -5,6 +5,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -44,4 +45,11 @@ public class CRUDService {
         System.out.println(user.getUsername());
         parser.addUser(user);
     }
+	
+	 @GET
+	    @Path("/{username}/{password}")
+	    @Produces(MediaType.APPLICATION_JSON)
+	    public User findUser(@PathParam("username") String username, @PathParam("password") String password){
+	        return parser.findUser(username, password);
+	    }
 }

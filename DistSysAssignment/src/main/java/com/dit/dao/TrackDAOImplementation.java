@@ -55,4 +55,11 @@ public class TrackDAOImplementation implements TrackDAO{
 		}
 	}
 
+	public User findUser(String username, String password) {
+        Query query = em.createQuery("select distinct c from User c where c.password = :password AND  c.username = :username ");
+        query.setParameter("username", username);
+        query.setParameter("password", password);
+        return (User)query.getSingleResult();
+    }
+
 }

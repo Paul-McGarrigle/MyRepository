@@ -159,4 +159,8 @@ public class MyParser implements Parser{
 		dao.addUser(user);
 	}
 
+	public User findUser(String username, String password) {
+		return dao.findUser(username,password);
+	}
+
 }

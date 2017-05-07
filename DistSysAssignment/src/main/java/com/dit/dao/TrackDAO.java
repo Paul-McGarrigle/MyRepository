@@ -16,5 +16,6 @@ public interface TrackDAO {
 	public void parsePlayList(PlayList playList);
 	public void parseJoin(Set<PlayList> playLists);
 	public void addUser(User user);
+	public User findUser(String username, String password);
 	public void parse1(Set<PlayList> playlist);
 }
