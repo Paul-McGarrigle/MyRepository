@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- Paul McGarrigle D16125349 Web Technologies Assignment 2 -->
-	<title>Paul McGarrigle D16125349 Web Technologies Assignment 2</title>
-	<!-- javascript version -->
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"type="text/javascript"></script>
-
-<!-- javascript file -->
-<!--<script lang="JavaScript" src="basic.js" type="text/javascript"></script>-->
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"type="text/javascript"></script>
 </head>
 <body onload="document.getElementById('logBtn').disabled = false">
 
@@ -30,6 +24,14 @@
 			<input type="password" name="pw_text" id="pw_text" width="20" maxlength="40" size="21">
 		</td>
 	</tr>
+	<tr>
+		<td class="name" id="pw_label">
+			Library Persistence ID:
+		</td>
+		<td class="data">
+			<input type="text" name="pid_text" id="pid_text" width="20" maxlength="40" size="21">
+		</td>
+	</tr>
 		<p id = "p"></p>
 	</tbody></table>
 	</form>
@@ -41,164 +43,44 @@
 <!-- JavaScript file -->
 <footer>
 <script>
-var usernameFree = false;
-var passwordIsStrong = false;
-var passwordsMatch = false;
-console.log("HERE SCRIPT");
-function checkUsername(username) {
-    $.ajax({
-        type: "GET",
-        url: "http://localhost:8080/ericssongroupproject/front/rest/users/" + username,
-        dataType: "json",
-        success: function (data) {
-            if (data == false) {
-                $("#username").text("Username exists.");
 
-                $("#status-name").removeClass("icon-check");
-                $("#status-name").addClass("icon-close");
-
-                $("#signup-name").addClass("error-input");
-                $(".signup-name").addClass("error-placeholder");
-				
-				usernameFree = false;
-
-            }else{
-                $("#username").text("");
-				
-                $("#status-name").removeClass("icon-close");
-                $("#status-name").addClass("icon-check");
-
-                $(".signup-name").removeClass("error-placeholder");
-                $("#signup-name").removeClass("error-input");
-				
-				usernameFree = true;
-            }
-        }
-    });
-}
-
-function checkStrength(password){
-    //initial strength
-    var strength = 0;
-    //if the password length is less than 6, return message
-    if(password.length < 6){
-        $("#result").removeClass();
-        $("#result").addClass("short");
-        return "Too short"
-    }
-    //if length is 8 characters or more, increase strength value
-    if(password.length > 7) strength += 1;
-    //if password contains both lower and uppercase characters, increase strength value
-    if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength += 1;
-    //if it has numbers and characters, increase strength value
-    if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) strength += 1 ;
-    //if it has one special character, increase strength value#
-    if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1;
-
-    //if value is less than 2
-    if (strength < 2 ) {
-        $('#result').removeClass();
-        $('#result').addClass('weak');
-        return 'Weak' 
-		passwordIsStrong = false;
-	} else if (strength == 2 ) {
-        $('#result').removeClass();
-        $('#result').addClass('good') ;
-		passwordIsStrong = true;
-        return 'Good' 
-	} else {
-        $('#result').removeClass() ;
-        $('#result').addClass('strong') ;
-		passwordIsStrong = true;
-        return 'Strong' 
-	}
-}
-
-$(document).ready(function () {
-    /*$("#signup-form").submit(function(event){
-        event.preventDefault();//Default action will not happen
-    });
-    $("#roleType").on("change", function(){
-        $("#signup-role").val($("#roleType option:selected").text());
-    });
-
-    $("#signup-name").on("keyup", function () {// when key is released
-        var input = $(this);
-        var is_uname = input.val();
-        checkUsername(is_uname);
-    });
+// Register function
+$(document).ready(function () {// Document ready ensures the DOM has been built
 	
-    $("#signup-password").on("keyup", function () {
-        $("#result").html(checkStrength($("#signup-password").val()));
-
-    });
-    $("#signup-repassword").on("input", function () {
-        var pwd = $("#signup-password").val();
-        var rpwd = $("#signup-repassword").val();
-        if (pwd != rpwd || rpwd == "")
-        {
-			$("#checkPass").text("Passwords must match.");
-			
-            $("#status-repassword").removeClass("icon-check");
-            $("#status-repassword").addClass("icon-close");
-            $(".signup-repassword").addClass("error-placeholder");
-            $("#signup-repassword").addClass("error-input");
-			
-			passwordsMatch = false;
-        }
-
-        // If repassword is ok
-        else if (pwd === rpwd && rpwd!== "")
-        {
-			$("#checkPass").text("");
-			
-            $("#status-repassword").addClass("icon-check");
-            $("#status-repassword").removeClass("icon-close");
-            $(".signup-repassword").removeClass("error-placeholder");
-            $("#signup-repassword").removeClass("error-input");
-			passwordsMatch = true;
-        }
-
-    });*/
-
-    var register = function(username, password) {
+    var register = function(username, password, libraryPersistenceId) {
         this.username=username;
         this.password = password;
-        //this.role = role;
+        this.libraryPersistenceId = libraryPersistenceId;
     }
 
     $("#regBtn").click(function () {
+    	// Assigns variables values in text fields
         var username = $("#name_text").val();
         var password = $("#pw_text").val();
-        //var rpassword = $("#signup-repassword").val();
-        //var role = $("#signup-role").val();
-		
-		//var successAlert = '<div class="alert alert-success alert-dismissable" id="success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>User successfully created.</div>';
-		//var failureAlert = '<div class="alert alert-danger alert-dismissable" id="success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Error. Please try again.</div>';
-		
+        var libraryPersistenceId = $("#pid_text").val();
+     	
+        // Check username & password are not blank
         if(username !== "" && password !== ""){
-            var user = new register(username,password);
+        	// Pass user values to be registered to the user
+            var user = new register(username,password,libraryPersistenceId);
             $.ajax({
                 url:"http://localhost:8080/DistSysAssignment-0.0.1-SNAPSHOT/rest/tracks/register",
                 type:"POST",
                 contentType: "application/json",
                 success:function () {
-                    //document.getElementById("alerts").innerHTML = successAlert;
-                	console.log("HERE SUCCESS "+ name);
+                	// Clears Fields
 					$('#name_text').val('');
 					$('#pw_text').val('');
-					//$('#signup-repassword').val('');
-					//$('#signup-role').val('');
-					//$('#result').text('');
+					$('#pid_text').val('');
                 },
                 error:function () {
-                    // document.getElementById("alerts").innerHTML = failureAlert;
                 	console.log("HERE FAIL");
                 },
+                // Change JSON data to string format
                 data:JSON.stringify(user)
             });
 			
-        }// If login is empty
+        }
         else {
         	console.log("HERE EMPTY");
         }
@@ -207,40 +89,20 @@ $(document).ready(function () {
 
 });
 
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-///////////LLLLLLLLLLLLLLLOOOOOOOOOOOOOGGGGGGGGGGGGGIIIIIIIIIIIIINNNNNNNNNNN////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-function checkUser(username, password) {
+// Login functions
+function checkUser(username, password, libraryPersistenceId) {
     $.ajax({
-        url:"http://localhost:8080/DistSysAssignment-0.0.1-SNAPSHOT/rest/tracks/" + username+"/"+ password,
+        // Pass Path Parameters
+    	url:"http://localhost:8080/DistSysAssignment-0.0.1-SNAPSHOT/rest/tracks/" + username+ "/"+ password,
         type:"GET",
+        data: { libraryPersistenceId: libraryPersistenceId },
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
-            //var role = data.role;
-           // switch(role){
-                //case "System Administrator": 
-            window.location = "sa_upload.html";
-            console.log("HERE LOGIN");
-             /*        break;
-                case "Network Management Engineer": window.location ="nme.html";
-                    break;
-                case "Customer Service Representative": window.location="csr.html";
-                    break;
-                case "System Engineer": window.location="se.html";
-            } */
+        	// Navigate to home.html
+            window.location = "home.html";
         },
         error:function () {
-            /* $("#login-error").text("Sorry, wrong username/password combination");
-            $("#login-password").val("");
-            $("#status-password").removeClass("icon-check");
-            $("#status-username").removeClass("icon-check"); */
             console.log("HERE LOGIN FAILED");
         }
     });
@@ -252,91 +114,35 @@ $(document).ready(function($){
         event.preventDefault();
     });
 
-    //when user starts entering username
-   /* $("#login-username").on("input", function () {
-        var input = $(this);
-        var username = input.val();
-        if(username){
-            $("#status-username").removeClass("icon-close");
-            $("#status-username").addClass("icon-check");
-            //$("#status-username").switchClass("icon-close", "icon-check");
-        }else{
-            $("#status-username").removeClass("icon-check");
-            $("#status-username").addClass("icon-close");
-            $(".login-username").addClass("error-placeholder");
-            $("#login-username").addClass("error-input");
-        }
-    });
-    //when user starts entering password
-     $("#login-password").on("input", function () {
-        var input = $(this);
-        var password = input.val();
-        if(password){
-            $("#status-password").removeClass("icon-close");
-            $("#status-password").addClass("icon-check");
-            //$("#status-password").switchClass("icon-close", "icon-check");
-        }else{
-            $("#status-password").removeClass("icon-check");
-            $("#status-password").addClass("icon-close");
-            $(".login-password").addClass("error-placeholder");
-            $("#login-password").addClass("error-input");
-        }
-    }); */
-
-    // when user clicks on submit button
+    // When the Login Button has been clicked
     $("#logBtn").click(function() {
         var value_login = $("#name_text").val();
         var value_password = $("#pw_text").val();
-
-        // Everything is all right
+        var libraryPersistenceId = $("#pid_text").val();
+        // User & Password values are not null or empty
         if (value_login !== "" && value_login !== null && value_password !== "" && value_password !== null)
         {
-            checkUser(value_login, value_password);
+        	// Check user function invoked
+            checkUser(value_login, value_password, libraryPersistenceId);
         }
-
-        // If its not ok
         else {
-            // If login isn't ok
             if (value_login == "")
             {
-                /* $("#status-username").removeClass("icon-check");
-                $("#status-username").addClass("icon-close");
-                $(".login-username").addClass("error-placeholder");
-                $("#login-username").addClass("error-input"); */
             	console.log("HERE LOGIN FAILED ON EMPTY DATA");
             } 
             
-
-            // If login is ok but password not
             else if (value_login != "")
             {
-                /* $("#status-username").removeClass("icon-close");
-                $("#status-username").addClass("icon-check");
-                $(".login-username").removeClass("error-placeholder");
-                $("#login-username").removeClass("error-input"); */
             	console.log("HERE LOGIN FAILED PW");
             }
-
-            // If password isn't ok
             if (value_password == "")
             {
-                /* $("#status-password").removeClass("icon-check");
-                $("#status-password").addClass("icon-close");
-                $(".login-password").addClass("error-placeholder");
-                $("#login-password").addClass("error-input"); */
             	console.log("HERE LOGIN FAILED PW");
             }
-
-            // If password is ok but login not
             else if (value_password != "")
             {
-                /* $("#status-password").removeClass("icon-close");
-                $("#status-password").addClass("icon-check");
-                $(".login-password").removeClass("error-placeholder");
-                $("#login-password").removeClass("error-input"); */
             	console.log("HERE LOGIN FAILED ON NAME");
             }
-
             return false;
         }
 
@@ -344,286 +150,5 @@ $(document).ready(function($){
 
 });
 </script>
-
-<!-- 	<script>
-		// Declare Global Variables
-		var flag = 0;
-		var updateUser = false;
-		var message = "";
-		
-		// Specifies that each cookie will live for a year, i.e. (365(days)*24(hours)*60(mins)*60(seconds)*1000(milliseconds))
-		var d = new Date();
-		d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
-		var expires = "expires="+d.toUTCString();
-		
-		// Add event Listeners to the buttons
-		document.getElementById("regBtn").addEventListener("click", function(){ register() }); 
-		document.getElementById("logBtn").addEventListener("click", function(){ checkCookie() });
-		
-		// This function is called when a user attempts to register a user account
-		function register()
-		{	
-			// First checks if username is already in use, so all usernames are unique by calling
-			// the getCookie function with the username passed as a parameter
-			var user = getCookie(document.getElementById("name_text").value);
-			if (user != "" && !updateUser) 
-			{
-				alert("Username already taken");
-				return;
-			} else {
-				// Declare Local Variables
-				var name = document.getElementById("name_text").value, password = document.getElementById("pw_text").value;
-				var email = document.getElementById("email_text").value, day = document.getElementById("day_text").value;
-				var month = document.getElementById("month_text").value, year = document.getElementById("year_text").value;
-				var validDate = false, validName = false, validPassword = false, validEmail = false;
-				var current = new Date(), currentMonth = current.getMonth(), currentDay = current.getDate();
-				var currentYear = current.getFullYear(), date = new Date(currentYear,currentMonth,currentDay);
-				var userDate=new Date(year+"-"+month+"-"+day);
-				
-				// Validate Name
-				// ^[a-zA-Z]+$ must only contain upper or lowercase characters
-				if(document.getElementById("name_text").value.match(/^[a-zA-Z]+$/)) {
-					validName = true;
-				} else {
-					message += "Incorrect Name value, only letters excepted\n";
-					validName = false;
-				}
-				
-				// Validate Password(Broken into sections to allow feedback on what aspect of password failed)
-				// ?=.* is a look ahead regular expression, it checks each character in the string
-				// but only returns weather a match is possible or not
-				// (?=.*[A-Z]) At least 1 upper case letter
-				// (?=.*[a-z]) At least 1 lower case letter
-				// (?=.*[0-9]) At least 1 number
-				// (?=.*[!@#\$%\^&\*]) At least 1 special character
-				// (?=.{6,}) At least 6 characters
-				if(!document.getElementById("pw_text").value.match(/^(?=.*[A-Z])/)) {
-					message += "Password Needs an Upper Case Character\n";
-					validPassword = false;
-				} else if(!document.getElementById("pw_text").value.match(/^(?=.*[a-z])/ )) {
-					message += "Password Needs a Lower Case Character\n";
-					validPassword = false;
-				} else if(!document.getElementById("pw_text").value.match(/^(?=.*[0-9])/ )) {
-					message += "Password Needs a Number\n";
-					validPassword = false;
-				} else if(!document.getElementById("pw_text").value.match(/^(?=.*[!@#\$%\^&\*])/ )) {
-					message += "Password Needs a Special Character\n";
-					validPassword = false;
-				} else if(!document.getElementById("pw_text").value.match(/^(?=.{6,})/ )) {
-					message += "Password Needs to be at least 6 Characters in Length\n";
-					validPassword = false;
-				} else {
-					validPassword = true;
-				}
-				
-				
-				// If information is validated and user does not exist the new user is registered by invoking 
-				// setCookie function with the valid values passed as parameters
-				// If information is validated and user already exists all information is updated except username
-				// or else an alert will display reasons information was not validated
-				if(validDate && validName && validPassword && validEmail && !updateUser){
-					setCookie(name, password, email, day, month, year, 1);
-					alert("User Registered");
-				} else if(validDate && validName && validPassword && validEmail && updateUser){
-					var user = getCookie(document.getElementById("name_text").value);
-					var dec = decodeURI(user);
-					var obj = JSON.parse(dec);
-					obj.password = password;
-					obj.email = email;
-					obj.day = day;
-					obj.month = month;
-					obj.year = year;
-					// Encode updated cookie values
-					var enc = encodeURI("User_"+obj.name + "=" + JSON.stringify(obj) + ";" + expires + ";path=/");
-					document.cookie = enc;
-					alert("User Updated");
-				} else {
-					alert(message);
-					message="";
-				}
-			
-			}
-		}
-		
-		// Creates a cookie with valid information passed from registration function
-		function setCookie(cname, cpassword, cemail, cday, cmonth, cyear, cvisit) {
-			// Encode cookie
-			var enc = encodeURI("User_"+cname + "=" + JSON.stringify({name: cname, password: cpassword, email: cemail, 
-				day: cday, month: cmonth, year: cyear, visit: cvisit}) + ";" + expires + ";path=/");
-			document.cookie = enc;
-		}
-		
-		// Returns a specific cookie from the document.cookie string, cookie is specified by the name passed by parameter
-		function getCookie(cname) {
-			var name = "User_"+ cname + "=";
-			var ca = document.cookie.split(';');
-			for(var i = 0; i < ca.length; i++) {
-				var c = ca[i];
-				while (c.charAt(0) == ' ') {
-					c = c.substring(1);
-				}
-				if (c.indexOf(name) == 0) {
-					return c.substring(name.length, c.length);
-				}
-			}
-			return "";
-		}
-		
-		// Checks weather a cookie already exists by invoking the getCookie function and checking if a value is returned or not
-		function checkCookie() {
-			var user = getCookie(document.getElementById("name_text").value);
-			if (user != "") 
-			{	
-				//Decode cookie before JSON parsing
-				var dec = decodeURI(user);
-				// If a cookie is returned it is parsed to a JSON object
-				var obj = JSON.parse(dec);
-				// If the password field contains the password value stored in the cookie the user is loged in
-				if(obj.password == document.getElementById("pw_text").value){
-					login(obj);
-				} else {
-					alert("Valid Username But Invalid Password")
-				}
-			} else {
-				alert("No account found for that user, please register instead");
-			}
-		}
-		
-		// Leap year function provided in Lecture 6
-		function isLeapYear(year)
-		{
-			return_value = true;
-
-			// There is no leap year if the year is not divisible by 4
-			if ((year % 4) != 0)
-				return_value = false;
-				
-			// There is no leap year if the year is divisible by 100 but not 400
-			else if (((year % 100) == 0) & ((year % 400) != 0))
-				return_value = false;
-			
-			return return_value;
-		}
-		
-		// This function is invoked when the Forget Me button is pressed, it accepts a cookie and 
-		// deletes it by setting the expire value to a date that has already occured, it also clears the form & reloads page
-		function deleteCookie(name)
-		{
-			document.getElementById("personal_info").reset();
-			location.reload();
-			document.cookie = "User_"+name+"=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-		}
-		
-		// This function is invoked when a user successfully logs in
-		function login(obj)
-		{
-			if(flag < 1)
-			{	
-				// Create Forget Me button
-				var btn = document.createElement("BUTTON");        
-				var t = document.createTextNode("Forget Me");       
-				btn.appendChild(t);
-				btn.id = "delBtn";		
-				updateUser = true;
-				
-				// Make changes to existing buttons
-				document.getElementById("div").appendChild(btn);
-				document.getElementById("regBtn").innerHTML = "Update";
-				document.getElementById("logBtn").disabled = true;
-				document.getElementById("name_text").readOnly = true;
-				flag++;
-			} 
-			
-			// Greeting
-			alert("Welcome back, " + obj.name + "!");
-			
-			// Fills fields with user data
-			document.getElementById("name_text").value = obj.name;
-			document.getElementById("pw_text").value = obj.password;
-			document.getElementById("email_text").value = obj.email;
-			document.getElementById("day_text").value = obj.day;
-			document.getElementById("month_text").value = obj.month;
-			document.getElementById("year_text").value = obj.year;
-			
-			// Every time user logs in the count is incremented
-			document.getElementById("p").innerHTML = "<label>" + obj.name + " number of visits: "+ obj.visit +"</label>";
-			obj.visit++;
-			
-			// Encode cookie
-			var enc = encodeURI("User_"+obj.name + "=" + JSON.stringify(obj) + ";" + expires + ";path=/");
-			document.cookie = enc;
-			
-			// Add event listener to Forget Me button
-			document.getElementById("delBtn").addEventListener("click", function(){ deleteCookie(obj.name) });
-		}
-		/* var register = function(username, password, role) {
-	        this.username=username;
-	        this.password = password;
-	        this.role = role;
-	    }
-		var user = new register(username,password,role);
-        $.ajax({
-            url:"http://localhost:8080/ericssongroupproject/front/rest/tracks/register",
-            type:"POST",
-            contentType: "application/json",
-            success:function () {
-                document.getElementById("alerts").innerHTML = successAlert;
-				$('#name_text').val('');
-				$('#pw_text').val('');
-            },
-            error:function () {
-                document.getElementById("alerts").innerHTML = failureAlert;
-            },
-            data:JSON.stringify(user)
-        }); */
-        
-        
-        
-        
-        $(document).ready(function(){
-        	
-        	/* $(document).ready(function(){
-        	    $("#searchByImsiButton").prop('disabled',true);
-        	    $("#imsi").keyup(function(){
-        	        $("#searchByImsiButton").prop('disabled', this.value == "" ? true : false);     
-        	    })
-        	}); */
-        	
-        	//*******************//
-        	//*** CSR QUERIES ***//
-        	//*******************//
-        	
-        	//--- 1. SELECT BY IMSI, RETURN EVENT_ID, CAUSE_CODE ---//
-        	// currently returns all; selection made at front end
-        	$("#regBtn").click(function(){	
-        		
-        		//-- retrieves IMSI from form --//
-        		imsi = $("#imsi1").val();
-        		name = $("#name_text").val();
-				password = $("#pw_text").val();
-        		
-        		
-        		$.ajax({
-        			
-        			type:"GET",
-        			url:"rest/base/"+imsi,
-        			data: { start: name, end: password },
-        			dataType:"json",
-        			
-        			success: function(data) {
-        				console.log('Success!', data);
-        				$("#responseHolder").empty();
-        				
-        				//$.each(data.baseDataList, function(index, value){
-        				//	$("#responseHolder").append
-        				//		("<li> Event Id: "+value.event_id+" Cause Code: "+value.cause_code+"</li>");
-        				 //});	
-        			}
-        	
-        		});
-        	
-        	});
-        });
-	</script> -->
 </footer>
 </html>

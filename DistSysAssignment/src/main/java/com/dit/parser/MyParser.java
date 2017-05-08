@@ -1,6 +1,7 @@
 package com.dit.parser;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.dit.dao.TrackDAO;
+import com.dit.dao.DAO;
 import com.dit.entities.PlayList;
 import com.dit.entities.Track;
 import com.dit.entities.User;
@@ -28,18 +29,18 @@ import com.dit.entities.User;
 public class MyParser implements Parser{
 	
 	@EJB
-	private TrackDAO dao;
+	private DAO dao;
 	
 	int count = 0;
 	private String trackId = null, name = null, artist = null, album = null;
-	private String ppid = null, playListName = null, playListId = null, playListTrackId = null;
+	private String ppid = null, playListName = null, playListId = null, playListTrackId = null, libraryPersistenceId = null;
 	private Set<Track> tracks = new HashSet<Track>();
 	private Set<PlayList> playLists = new HashSet<PlayList>();
 
 	public void parse() {
 	      try {	
 	    	  // Specify file containing xml to be parsed, must be in wildfly bin folder
-	          File inputFile = new File("iTunes Music Library1.xml");
+	          File inputFile = new File("iTunes Music Library3.xml");
 	          
 	          // Create Document Builder, Document is essentially the DOM tree
 	          DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -51,7 +52,7 @@ public class MyParser implements Parser{
 	          doc.getDocumentElement().normalize();
 	          Element root = doc.getDocumentElement();
 	          
-	          // The first dictinary tags in the tree, FirstLayer
+	          // The first dictionary tags in the tree, FirstLayer
 	          Node firstDictionary = root.getElementsByTagName("dict").item(0);
 	          NodeList firstDictionaryList = firstDictionary.getChildNodes();
 	          
@@ -59,8 +60,13 @@ public class MyParser implements Parser{
 	          Node firstArray = root.getElementsByTagName("array").item(0);
 	          NodeList firstArrayList = firstArray.getChildNodes();
 	          
+	          // Return Library Persistent ID
 	          for (int i = 0; i < firstDictionaryList.getLength(); i++) {
 	             Node nNode = firstDictionaryList.item(i);
+	             if(nNode.getTextContent().equals("Library Persistent ID")){
+	            	 libraryPersistenceId=nNode.getNextSibling().getTextContent();
+		         }
+	             // Navigate to desired fields
 	             if(nNode.getNodeName().equals("dict")){
 	            	 Element iElement = (Element) nNode;
 	            	 NodeList secondDictionaryList = iElement.getChildNodes();
@@ -82,13 +88,18 @@ public class MyParser implements Parser{
             					 if(nNode3.getTextContent().equals("Artist")){
             						 Element kElement = (Element) nNode3;
             						 artist = kElement.getNextSibling().getTextContent();
-    	            			 }
+    	            			 } 
             					 if(nNode3.getTextContent().equals("Album")){
             						 Element kElement = (Element) nNode3;
             						 album = kElement.getNextSibling().getTextContent();
     	            			 }
             				 }
+            				 // Add Track to tracks
             				 Track t = new Track(name, artist, album, trackId);
+            				 trackId = null;
+            				 name = null;
+            				 artist = null;
+            				 album = null;
         					 tracks.add(t);
 	            		 }
 	            	 }
@@ -132,6 +143,7 @@ public class MyParser implements Parser{
 	            								 Element lElement = (Element) nNode4;
 	            								 playListTrackId = lElement.getNextSibling().getTextContent();
 	            							 }
+	            							 // Check for relationship between tracks and playlists
 	            			            	 for(Track t: tracks){
 	            			            		if(t.getTrackId().equals(playListTrackId)){
 	            			            			playlistTrack.add(t);
@@ -142,7 +154,13 @@ public class MyParser implements Parser{
 	            				 }
 		            		 }
 		            	 }
-		            	 PlayList p = new PlayList(playListName, ppid, playListId,playlistTrack);
+		            	 // Playlist object will have collection of tracks
+		            	 PlayList p = new PlayList(playListName, ppid, playListId, libraryPersistenceId, playlistTrack);
+		            	 playListName = null;
+		            	 ppid = null;
+		            	 playListId = null;
+        				 
+		            	 // Parse Playlist
     					 playLists.add(p);
     					 dao.parsePlayList(p);
     					
@@ -151,16 +169,21 @@ public class MyParser implements Parser{
 	       } catch (Exception e) {
 	          e.printStackTrace();
 	       }
-	      dao.parse(tracks); // Correct for tracks
+	      // Parse Tracks
+	      dao.parse(tracks);
 	      
 	}
 	
+	// Methods explained in DAO implementation Class
 	public void addUser(User user){
 		dao.addUser(user);
 	}
 
 	public User findUser(String username, String password) {
 		return dao.findUser(username,password);
+	}
+	public Collection<PlayList> getPlayList(String libraryPersistenceId){
+		return dao.getPlayList(libraryPersistenceId);
 	}
 
 }

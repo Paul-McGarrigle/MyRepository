@@ -7,6 +7,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,18 +18,22 @@ import javax.persistence.Table;
 @Entity
 @Table(name="track")
 public class Track implements Serializable{
-	@Id
+	
+	@Id// Primary Key
 	@GeneratedValue(strategy=GenerationType.IDENTITY)// Used for Auto-Increment
 	@Column(name="t_id")private int id;
 	
+	// Columns variables will be mapped to
 	@Column(name="name")private String name;
 	@Column(name="artist")private String artist;
 	@Column(name="album")private String album;
 	@Column(name="trackId")private String trackId;
 	
-	@ManyToMany(mappedBy="tracksplaylists")
+	// Relationship with Join Table
+	@ManyToMany(mappedBy="tracksplaylists",fetch=FetchType.EAGER)
 	private Set<PlayList> playlisttrack;
 	
+	// No argument constructor
 	public Track(){}
 
 	public Track(String name, String artist, String album, String trackId) {

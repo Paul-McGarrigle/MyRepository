@@ -10,12 +10,11 @@ import com.dit.entities.Track;
 import com.dit.entities.User;
 
 @Local
-public interface TrackDAO {
+public interface DAO {
 	public Collection<Track> getAllTracks();
 	public void parse(Set<Track> tracks);
 	public void parsePlayList(PlayList playList);
-	public void parseJoin(Set<PlayList> playLists);
 	public void addUser(User user);
 	public User findUser(String username, String password);
-	public void parse1(Set<PlayList> playlist);
+	public Collection<PlayList> getPlayList(String libraryPersistenceId);
 }

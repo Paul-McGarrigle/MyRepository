@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-2.1.4.min.js"type="text/javascript"></script>
+	</head>
+	
+	<body>
+		<button id = "loadBtn">Load Backup</button>
+		<input type="text" name="pid_text" id="pid_text" width="20" maxlength="40" size="21">
+		<ul id="responseHolder">
+	</ul>
+	</body>
+	<footer>
+		<script>
+		$(document).ready(function(){
+			
+			// Load button clicked
+		    $("#loadBtn").click(function(){
+		    	libraryPersistenceId = $("#pid_text").val();
+		        
+		        $.ajax({
+
+		            type:"GET",
+		            url:"rest/tracks/results",
+		            data: { libraryPersistenceId: libraryPersistenceId },
+		            dataType:"json",
+
+		            success: function(data) {
+						
+						$("#responseHolder").empty();
+							
+							// Output dynamically loaded to webpage
+							$("#responseHolder").append("<li> PlayLists: "+data+"</li>");
+						
+					}
+
+		        });
+
+		    });
+
+			
+		});	
+		</script>
+	</footer>
+</html>

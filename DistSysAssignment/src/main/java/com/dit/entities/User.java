@@ -8,36 +8,36 @@ import java.util.HashSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
 public class User implements Serializable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	
+    @Id// Primary Key
+    @GeneratedValue(strategy = GenerationType.IDENTITY)// Used for Auto-Increment
     @Column(name = "id") private int id;
     
+    // Columns variables will be mapped to
     @Column(name = "username") private String username;
     @Column(name = "password") private String password;
-    @Column(name = "ppid") private String ppid;
+    @Column(name = "libraryPersistenceId") private String libraryPersistenceId;
     
-/*    @OneToMany
-    @JoinColumn(name = "ppid") private String ppid;*/
-    
-    /*@OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ppid", referencedColumnName="ppid")
-    private Collection<PlayList> playList = new HashSet<PlayList>();*/
-    
+    // No argument constructor
     public User(){}
 
-    public User(String username, String password) {
+    public User(String username, String password, String libraryPersistenceId) {
         this.username = username;
         this.password = password;
+        this.libraryPersistenceId = libraryPersistenceId;
     }
 
     public int getId() {
@@ -64,5 +64,14 @@ public class User implements Serializable{
         this.password = password;
     }
 
+	public String getLibraryPersistenceId() {
+		return libraryPersistenceId;
+	}
+
+	public void setLibraryPersistenceId(String libraryPersistenceId) {
+		this.libraryPersistenceId = libraryPersistenceId;
+	}
+    
+    
 }
 
