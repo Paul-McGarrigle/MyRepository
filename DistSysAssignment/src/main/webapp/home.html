@@ -28,8 +28,10 @@
 						
 						$("#responseHolder").empty();
 							
-							// Output dynamically loaded to webpage
-							$("#responseHolder").append("<li> PlayLists: "+data+"</li>");
+							 $.each(data.playListList, function(index, value){
+								$("#responseHolder").append
+									("<li> PlayList: "+value.playListName+"</li>");
+							});	
 						
 					}
 
